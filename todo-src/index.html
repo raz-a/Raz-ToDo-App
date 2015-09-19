@@ -5,17 +5,19 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="https://code.angularjs.org/1.4.3/angular.js"></script>
+    <link href="bower_components/angular-xeditable/dist/css/xeditable.css" rel="stylesheet">
+    <script src="bower_components/angular-xeditable/dist/js/xeditable.js"></script>
     <link rel="stylesheet" href="style.css" />
     <script src="script.js"></script>
   </head>
 
   <body ng-app="app">
-    <h1 class="text-center">My little to do app!</h1>
+    <h1 class="text-center">Raz's little to do app!</h1>
     
     <div id="todo" class="col-xs-6 col-xs-offset-3" ng-controller="MainCtrl">
   
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="Item to add to todo list" ng-model="newItem">
+          <input type="text" class="form-control" placeholder="Item to add to todo list" ng-model="newItem" ng-keypress="enterPress($event)">
           <span class="input-group-btn">
             <button class="btn btn-default" type="button" ng-click="addItem()">
               Add
@@ -23,20 +25,59 @@
             </button>
           </span>
         </div><!-- /input-group -->
+       
+       <div>
+         <label>Priority: </label>
+         <label>
+            <input type="radio" name="Low" value="{{PriorityEnum.LOW}}" ng-model="newPriority">
+            Low
+         </label>
+         <label>
+            <input type="radio" name="Normal" value="{{PriorityEnum.NORMAL}}" ng-model="newPriority">
+            Normal
+         </label>
+         <label>
+            <input type="radio" name="High" value="{{PriorityEnum.HIGH}}" ng-model="newPriority">
+            High
+         </label>
+       </div>
         
-      <h2>stuff i gotta do asap</h2>
+      <h2>Things to do</h2>
+      <p>Total Items:{{totalTasks}}</p>
       
       <ul class="list-group">
         <!-- http://www.w3schools.com/css/css_float.asp -->
-        <li class="list-group-item clearfix" ng-repeat="do in todos">
+        <li class="list-group-item clearfix" ng-class="{ lowPriority : do.priority === PriorityEnum.LOW, highPriority : do.priority === PriorityEnum.HIGH  }" ng-repeat="do in todos">
           
-          <span>{{do}}</span>
+          <a href="#" editable-text="todos[$index].task">
+            <span ng-show="do.complete === false">{{do.task}}</span>
+          </a>
+          <strike ng-show="do.complete === true">{{do.task}}</strike>
+          
           <button class="btn btn-danger pull-right" type="button" ng-click="deleteItem(do)">
             <span class="glyphicon glyphicon-trash " aria-hidden="true"></span>
           </button>
+          <button class="btn btn-success pull-right" type="button" ng-show="do.complete === false" ng-click="do.complete = true">
+            <span class="glyphicon glyphicon-ok " aria-hidden="true"></span>
+          </button>
+          <button class="btn btn-default pull-right active" type="button" ng-show="do.complete === true" ng-click="do.complete = false">
+            <span class="glyphicon glyphicon-ok " aria-hidden="true"></span>
+          </button>
+          
+          
+          <div>Priority: {{do.priority}}</div>
+          
 
         </li>
       </ul>
+      
+      <!-- Button to clear items -->
+      <div class="text-center">  
+        <button class="btn btn-info" type="button" ng-click="removeCompleteItems();">
+          <h4>Delete Completed Items</h4> 
+        </button>
+      </div>
+      
     </div>
     
   </body>

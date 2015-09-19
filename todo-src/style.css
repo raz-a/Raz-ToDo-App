@@ -1,4 +1,14 @@
 /* Styles go here */
 body {
-  background: green;
+  background: #66CC66;
+}
+
+.lowPriority
+{
+  background: #B6B6B6
+}
+
+.highPriority
+{
+  background: #A2C2FF
 }
